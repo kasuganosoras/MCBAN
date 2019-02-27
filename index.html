@@ -1,0 +1,111 @@
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=11">
+		<meta name="application-name" content="Minecraft Blacklist">
+		<meta name="msapplication-TileColor" content="#F1F1F1">
+		<meta name="description" content="云端黑名单">
+		<meta name="keywords" content="MCBAN">
+		<meta property="og:title" content="Sakura Pages" />
+		<meta property="og:image" content="https://www.zerobbs.net/content/ZeroDream/images/og.jpg?201610171354" />
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" crossorigin="anonymous">
+		<title>MCBAN 我的世界云端黑名单</title>
+		<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.0/showdown.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
+		<style type="text/css">.thread img{vertical-align:text-bottom ! important;max-width:100% ! important;margin-top:8px;margin-bottom:8px;max-height:170px ! important;}.thread table{display:block;width:100%;overflow:auto;margin-bottom:8px;}.thread table tr{background-color:#fff;border-top:1px solid #c6cbd1;}.thread table tr:nth-child(2n){background-color:#f6f8fa;}.thread table th,.thread table td{padding:6px 13px;border:1px solid #dfe2e5;font-size:14px;}.thread pre{margin-bottom:16px;}pre{border:none ! important;}blockquote{font-size:15px ! important;}</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-12">
+					<h2>MCBAN</h2>
+					<p>我的世界云端黑名单</p>
+					<hr>
+				</div>
+				<div class="col-sm-4">
+					<h4>在此输入您需要查询的 QQ 号</h4>
+					<p>
+						<div class="input-group">
+							<input id="qq" type="text" class="form-control">
+							<span class="input-group-btn">
+								<button class="btn btn-danger" type="button" style="padding-left: 32px;padding-right: 32px;" onclick="search()">查询</button>
+							</span>
+						</div>
+					</p>
+				</div> 
+				<div class="col-sm-8">
+					<div id="page">
+						<h4>欢迎访问 MCBAN 云端黑名单</h4>
+						<p>这是一个由 MCBAN、枫韵云、零梦工作室以及各位网友共同维护的一个 Minecraft 我的世界云端黑名单，我们记录各种商家、买家的失信记录，保护大家在交易时不会上当受骗。</p>
+						<p>如需提交举报信息，请加 QQ 群：2336643 并向我们发送您的举报内容。</p>
+					</div>
+					<hr>
+					<h4>最新收录</h4>
+					<p>QQ：321526879，接服务器宣传贴吧顶置，付款后跑路 涉及金额 130 元 (多人举报)</p>
+					<p>QQ：1612275520，举报人购买VPS后，使用不到一天无法使用，联系供货商后补给退钱，供货商主动要求上云黑。 涉及金额 50 元</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12">
+					<hr>
+					<p>本站托管于 Github Pages | <a href="https://github.com/kasuganosoras/MCBAN" target="_blank">项目链接</a></p>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			var md = new showdown.Converter();
+			function search() {
+				var searchqq = $("#qq").val();
+				var htmlobj = $.ajax({
+					type: 'GET',
+					url: "list.json",
+					async: true,
+					error: function() {
+						alert("错误：" + htmlobj.responseText);
+						return;
+					},
+					success: function() {
+						try {
+							var data = JSON.parse(htmlobj.responseText);
+							var found = false;
+							for(var i = 0;i < data.length;i++) {
+								if(data[i].qq == searchqq) {
+									found = true;
+									loadText(data[i].id, data[i]);
+								}
+							}
+							if(!found) {
+								$("#page").html("<h4>搜索结果</h4><p>未搜索到结果，但是建议您在交易时仍然应该保持警惕和冷静。</p><p>如果您在交易过程中被骗，欢迎向我们举报。</p>");
+							}
+						} catch (e) {
+							console.log(e);
+						}
+						return;
+					}
+				});
+			}
+			function loadText(id, data) {
+				var htmlobj = $.ajax({
+					type: 'GET',
+					url: "text/" + id + ".md",
+					async:true,
+					error: function() {
+						alert("错误：" + htmlobj.responseText);
+						return;
+					},
+					success: function() {
+						var markdowndata = md.makeHtml(htmlobj.responseText);
+						$("#page").html("<h4>搜索结果</h4>" + 
+						"<p><b>QQ：</b>" + data.qq + "</p>" + 
+						"<p><b>收录时间：</b>" + data.date + "</p>" + 
+						"<p><b>云黑等级：</b>" + data.level + "</p>" + 
+						markdowndata);
+						return;
+					}
+				});
+			}
+		</script>
+	</body>
+</html>
