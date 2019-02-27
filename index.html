@@ -92,59 +92,6 @@
 				</div>
 			</div>
 		</div>
-		<script type="text/javascript">
-			var md = new showdown.Converter();
-			function search() {
-				$("#page").html("<p>正在查询中...</p>");
-				var searchqq = $("#qq").val();
-				var htmlobj = $.ajax({
-					type: 'GET',
-					url: "list.json",
-					async: true,
-					error: function() {
-						alert("错误：" + htmlobj.responseText);
-						return;
-					},
-					success: function() {
-						try {
-							var data = JSON.parse(htmlobj.responseText);
-							var found = false;
-							for(var i = 0;i < data.length;i++) {
-								if(data[i].qq == searchqq) {
-									found = true;
-									loadText(data[i].id, data[i]);
-								}
-							}
-							if(!found) {
-								$("#page").html("<h4>搜索结果</h4><blockquote><p>未搜索到结果，但是建议您在交易时仍然应该保持冷静和警惕。</p></blockquote><p>如果您在交易过程中被骗，或者您有充足的证据证明对方有诈骗行为，欢迎向我们举报。</p><hr>");
-							}
-						} catch (e) {
-							console.log(e);
-						}
-						return;
-					}
-				});
-			}
-			function loadText(id, data) {
-				var htmlobj = $.ajax({
-					type: 'GET',
-					url: "text/" + id + ".md",
-					async:true,
-					error: function() {
-						alert("错误：" + htmlobj.responseText);
-						return;
-					},
-					success: function() {
-						var markdowndata = md.makeHtml(htmlobj.responseText);
-						$("#page").html("<h4>搜索结果</h4>" + 
-						"<p><b>QQ：</b>" + data.qq + "</p>" + 
-						"<p><b>收录时间：</b>" + data.date + "</p>" + 
-						"<p><b>云黑等级：</b>" + data.level + "</p>" + 
-						markdowndata + "<blockquote><p><b class='text-danger'>请立即停止与此人交易，谨防被骗。</b></p></blockquote><hr>");
-						return;
-					}
-				});
-			}
-		</script>
+		<script type="text/javascript">var md=new showdown.Converter();function search(){$("#page").html("<p>正在查询中...</p>");var searchqq=$("#qq").val();var htmlobj=$.ajax({type:'GET',url:"list.json",async:true,error:function(){alert("错误："+htmlobj.responseText);return},success:function(){try{var data=JSON.parse(htmlobj.responseText);var found=false;for(var i=0;i<data.length;i++){if(data[i].qq==searchqq){found=true;loadText(data[i].id,data[i])}}if(!found){$("#page").html("<h4>搜索结果</h4><blockquote><p>未搜索到结果，但是建议您在交易时仍然应该保持冷静和警惕。</p></blockquote><p>如果您在交易过程中被骗，或者您有充足的证据证明对方有诈骗行为，欢迎向我们举报。</p><hr>")}}catch(e){console.log(e)}return}})}function loadText(id,data){var htmlobj=$.ajax({type:'GET',url:"text/"+id+".md",async:true,error:function(){alert("错误："+htmlobj.responseText);return},success:function(){var markdowndata=md.makeHtml(htmlobj.responseText);$("#page").html("<h4>搜索结果</h4><p><b>QQ：</b>"+data.qq+"</p><p><b>收录时间：</b>"+data.date+"</p><p><b>云黑等级：</b>"+data.level+"</p>"+markdowndata+"<blockquote><p><b class='text-danger'>请立即停止与此人交易，谨防被骗。</b></p></blockquote><hr>");return}})}</script>
 	</body>
 </html>
